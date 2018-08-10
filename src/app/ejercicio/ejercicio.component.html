@@ -1,0 +1,41 @@
+<div class="">
+  <p>Campus</p>
+</div>
+
+<div class="example-container">
+  <mat-form-field *ngFor="let digit of secuencia.digits; let i = index">
+    <mat-select placeholder="digit" [(ngModel)]="secuencia.digits[i]">
+      <mat-option value="1">1</mat-option>
+      <mat-option value="2">2</mat-option>
+      <mat-option value="3">3</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+  <button mat-button (click)="agregarDigito()">Agregar dígito</button>
+  <button mat-button (click)="agregarSecuencia()">Agregar Secuencia</button>
+
+  <mat-card class="example-card" *ngFor="let secuencia of secuencias; let i = index">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>Secuencia: {{secuencia.digits}}</mat-card-title>
+      <mat-card-subtitle>Repeticiones: {{secuencia.reps}}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p>
+        The Shiba Inu is the smallest
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button (click)="changeReps(i, -1)">-1</button>
+      <button mat-button (click)="changeReps(i, 1)">+1</button>
+    </mat-card-actions>
+  </mat-card>
+
+
+
+
+  <button mat-button (click)="logStuff()">Log</button>
+
+</div>

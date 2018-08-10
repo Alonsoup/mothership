@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'mothership';
+  //Esta clase sólo es un wrapper para la barra de navegación de Material
 }
