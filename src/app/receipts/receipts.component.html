@@ -1,3 +1,4 @@
-<p>
-  receipts works!
-</p>
+<p>Receipts</p>
+<div *ngFor="let ticket of tickets | async">
+  <a href="{{ticket.fotoTicket}}">{{ticket.fecha}}</a>
+</div>
