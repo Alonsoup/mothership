@@ -17,9 +17,11 @@ import { AngularFireModule } from 'angularfire2';
 export const firebaseConfig = environment.firebaseConfig;
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 
+import { CoreModule } from "./core/core.module";
 import { LibrosComponent } from './libros/libros.component';
 import { ReceiptsComponent } from './receipts/receipts.component';
 import { EjercicioComponent } from './ejercicio/ejercicio.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { EjercicioComponent } from './ejercicio/ejercicio.component';
     NavigationComponent,
     LibrosComponent,
     ReceiptsComponent,
-    EjercicioComponent
+    EjercicioComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +48,8 @@ import { EjercicioComponent } from './ejercicio/ejercicio.component';
     FormsModule,
     MatCardModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    CoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
