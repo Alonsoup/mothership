@@ -62,5 +62,10 @@
 
 
   <button mat-button (click)="logStuff()">Log</button>
+  <button mat-button (click)="guardar()">Guardar</button>
 
+</div>
+
+<div *ngFor="let workout of workouts | async">
+  <p>holi</p>
 </div>

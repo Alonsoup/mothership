@@ -1,13 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from 'angularfire2/firestore';
+import { Observable } from 'rxjs';
+import 'rxjs/add/operator/map';
+
+import * as moment from 'moment';
+import { AuthService } from '../core/auth.service';
+
+interface Workout {
+  "history": [string],
+  "secuencias": [any],
+  "fecha": string,
+}
+
 @Component({
   selector: 'app-ejercicio',
   templateUrl: './ejercicio.component.html',
   styleUrls: ['./ejercicio.component.scss']
 })
 export class EjercicioComponent implements OnInit {
-
-  constructor() { }
+  workoutsCollection: AngularFirestoreCollection<Workout>;
+  workouts: Observable<Workout[]>
+  constructor(public auth: AuthService, private afs: AngularFirestore) { }
 
   secuencia = {
     id: "",
@@ -26,6 +40,11 @@ export class EjercicioComponent implements OnInit {
   history = []
 
   ngOnInit() {
+    this.auth.user.subscribe(user => {
+      this.workoutsCollection = this.afs.collection(`users/${user.uid}/workouts`);
+      this.workouts = this.workoutsCollection.valueChanges()
+    })
+
   }
 
   addStep(hand, step) {
@@ -127,4 +146,20 @@ export class EjercicioComponent implements OnInit {
     console.info('Secuencias: ', this.secuencias);
   }
 
+  guardar () {
+    let workout = {
+      "history": this.history,
+      "secuencias": this.secuencias
+    };
+    let fecha = moment().format("DD-MM-YYYY");
+
+    this.auth.user.subscribe(user => {
+      if (!user) {
+        console.log('No hay usuario. Inicia sesión.');
+        return;
+      }
+      let todaysWorkoutRef = this.afs.doc(`users/${user.uid}/workouts/${fecha}`);
+      todaysWorkoutRef.set(workout, {merge: true});
+    })
+  }
 }
