@@ -14,7 +14,34 @@ body { margin: 0; font-family: 'Roboto', sans-serif; }
   display: block;
 }
 
-.sec-col {
-  display: inline-block;
-  width: 50%;
+.mat-card-actions .add-rep-btn {
+  margin-left: 20%;
+}
+
+.mat-card-actions .del-btn {
+  float: right;
+}
+
+.rung-row {
+  background: url("assets/campus-rung.png") no-repeat scroll 0 0 transparent;
+  background-size: cover;
+  height: 60px;
+}
+
+.rung-row button {
+  width: 33%;
+}
+
+.active-left-rung {
+  background: url("assets/left-hand.png") no-repeat scroll 0 0 transparent;
+}
+
+.active-right-rung {
+  background: url("assets/right-hand.png") no-repeat scroll 0 0 transparent;
+}
+
+
+
+.rung-span {
+  float: right;
 }

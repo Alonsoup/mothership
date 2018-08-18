@@ -13,56 +13,39 @@
   <p *ngIf="!secuencia.start.left || !secuencia.start.right">Set the starting position</p>
   <p *ngIf="secuencia.start.left && secuencia.start.right">Now set the steps</p>
 
-  <div class="hand-col">
-      <button color="{{numero == secuencia.left ? 'accent' : ''}}" mat-button *ngFor="let numero of [9,8,7,6,5,4,3,2,1]" (click)="addStep('left', numero)">{{numero}}</button>
-  </div>
-  <div class="hand-col">
-      <button mat-button *ngFor="let numero of [9,8,7,6,5,4,3,2,1]" (click)="addStep('double', numero)">jump</button>
-  </div>
-  <div class="hand-col">
-      <button color="{{numero == secuencia.right ? 'accent' : ''}}" mat-button *ngFor="let numero of [9,8,7,6,5,4,3,2,1]" (click)="addStep('right', numero)">{{numero}}</button>
+  <div class="rung-row" *ngFor="let numero of [9,8,7,6,5,4,3,2,1]">
+    <button class="{{numero == secuencia.left ? 'active-left-rung' : ''}}" color="{{numero == secuencia.left ? 'accent' : ''}}" mat-button (click)="addStep('left', numero)">{{numero}}</button>
+    <button mat-button (click)="addStep('double', numero)">jump</button>
+    <button class="{{numero == secuencia.right ? 'active-right-rung' : ''}}" color="{{numero == secuencia.right ? 'accent' : ''}}" mat-button (click)="addStep('right', numero)">{{numero}}</button>
   </div>
 
-  <button mat-button (click)="agregarSecuencia()">Agregar Secuencia</button>
-  <button mat-button (click)="eliminarDraft()">Borrar</button>
+  <button mat-stroked-button (click)="agregarSecuencia()">Agregar Secuencia</button>
+  <button mat-stroked-button color="warn" (click)="eliminarDraft()">Borrar</button>
 
   <mat-card class="example-card" *ngFor="let secuencia of secuencias; let i = index">
-    <img src="../assets/baseline-edit-24px.svg" alt="">
-    <img (click)="borrarSecuencia(i)" src="../assets/baseline-delete-24px.svg" alt="">
-    <img (click)="duplicate(i)" src="../assets/baseline-swap_horiz-24px.svg" alt="">
-    <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title>Rung: {{secuencia.rung}}</mat-card-title>
-      <mat-card-subtitle>Reps: {{secuencia.reps}}</mat-card-subtitle>
-    </mat-card-header>
-
     <mat-card-content>
-      <div class="sec-col">
-        <h4>Start</h4>
-        <p>Left: {{secuencia.start.left}} Right: {{secuencia.start.right}}</p>
-        <h4>Steps</h4>
-        <p *ngFor="let step of secuencia.steps"> {{step.hand}} : {{step.step}}</p>
+      <div>
+        <p> <b>Start:</b> Left {{secuencia.start.left}} / Right {{secuencia.start.right}}</p>
+        <h4>Steps:</h4>
+        <span *ngFor="let step of secuencia.steps"> {{step.hand}} : {{step.step}} |</span>
       </div>
-      <!-- Esto es por si queremos tener la copia en el mismo card -->
-      <!-- <div class="sec-col">
-        <h4>Start</h4>
-        <p>Left: {{secuencia.start.left}} Right: {{secuencia.start.right}}</p>
-        <h4>Steps</h4>
-        <p *ngFor="let step of secuencia.steps"> {{step.hand}} : {{step.step}}</p>
-      </div> -->
-
+      <h3><span>Reps: {{secuencia.reps}}</span><span class="rung-span">Rung: {{secuencia.rung}}</span></h3>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button (click)="changeReps(i, -1)">-1</button>
-      <button mat-button (click)="changeReps(i, 1)">+1</button>
+      <button class="dup-btn" mat-raised-button (click)="duplicate(i)"><img src="../assets/baseline-swap_horiz-24px.svg" alt=""></button>
+      <button class="add-rep-btn" mat-mini-fab color="primary" (click)="changeReps(i, 1)">+1</button>
+      <button class="del-btn" mat-raised-button color="" (click)="borrarSecuencia(i)"><img src="../assets/baseline-delete-24px.svg" alt=""></button>
     </mat-card-actions>
   </mat-card>
 
+  <div class="timer">
+    <h3>Descanso</h3>
+    <p>{{timer.counter}} S</p>
+    <button mat-flat-button (click)="startTimer()">Start</button>
+    <button mat-flat-button color="warn" (click)="stopTimer()">Stop</button>
+  </div>
 
-
-
-  <button mat-button (click)="logStuff()">Log</button>
-  <button mat-button (click)="guardar()">Guardar</button>
+  <button mat-fab color="accent" (click)="guardar()">Save</button>
 
 </div>
 

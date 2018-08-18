@@ -38,6 +38,10 @@ export class EjercicioComponent implements OnInit {
   secuencias = []
   rungs = ["1","2","3","4","5","6","7","8","9"]
   history = []
+  timer = {
+    counter: 0,
+    runClock: null
+  }
 
   ngOnInit() {
     this.auth.user.subscribe(user => {
@@ -45,6 +49,14 @@ export class EjercicioComponent implements OnInit {
       this.workouts = this.workoutsCollection.valueChanges()
     })
 
+  }
+
+  startTimer() {
+    console.log(moment())
+  }
+
+  stopTimer() {
+    console.log('stopping')
   }
 
   addStep(hand, step) {
