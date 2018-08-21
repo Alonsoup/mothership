@@ -22,7 +22,7 @@ export class EjercicioComponent implements OnInit {
   workoutsCollection: AngularFirestoreCollection<Workout>;
   workouts: Observable<Workout[]>
   constructor(public auth: AuthService, private afs: AngularFirestore) { }
-
+  mode = ''
   secuencia = {
     id: "",
     reps: 0,
@@ -42,6 +42,10 @@ export class EjercicioComponent implements OnInit {
     counter: 0,
     runClock: null
   }
+  chosenWorkout = <Workout>  {
+    history: []
+  }
+  currentStep = 0
 
   ngOnInit() {
     this.auth.user.subscribe(user => {
@@ -49,6 +53,10 @@ export class EjercicioComponent implements OnInit {
       this.workouts = this.workoutsCollection.valueChanges()
     })
 
+  }
+
+  changeMode(mode) {
+    this.mode = mode;
   }
 
   startTimer() {
@@ -159,11 +167,13 @@ export class EjercicioComponent implements OnInit {
   }
 
   guardar () {
+    let fecha = moment().format("DD-MM-YYYY");
+
     let workout = {
       "history": this.history,
-      "secuencias": this.secuencias
+      "secuencias": this.secuencias,
+      "fecha": fecha
     };
-    let fecha = moment().format("DD-MM-YYYY");
 
     this.auth.user.subscribe(user => {
       if (!user) {
@@ -173,5 +183,17 @@ export class EjercicioComponent implements OnInit {
       let todaysWorkoutRef = this.afs.doc(`users/${user.uid}/workouts/${fecha}`);
       todaysWorkoutRef.set(workout, {merge: true});
     })
+  }
+
+  chooseWorkout(workout) {
+    console.log(workout);
+    this.chosenWorkout = workout;
+  }
+
+  nextStep() {
+    if (this.currentStep < this.chosenWorkout.history.length) {
+      this.currentStep ++;
+    }
+
   }
 }

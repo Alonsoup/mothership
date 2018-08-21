@@ -2,7 +2,12 @@
   <p>Campus</p>
 </div>
 
-<div class="example-container">
+<div *ngIf="mode == ''">
+  <button mat-raised-button (click)="changeMode('new')">Record a new session</button>
+  <button mat-raised-button (click)="changeMode('load')">Load a routine</button>
+</div>
+
+<div class="example-container" *ngIf="mode == 'new'">
   <mat-form-field>
     <mat-select placeholder="rung" [(ngModel)]="secuencia.rung">
       <mat-option value="L">L</mat-option>
@@ -49,6 +54,37 @@
 
 </div>
 
-<div *ngFor="let workout of workouts | async">
-  <p>holi</p>
+
+<div class="" *ngIf="mode == 'load'">
+  <div *ngIf="workouts.length < 1">
+    <p>You haven't logged any workouts yet</p>
+  </div>
+  <div *ngFor="let workout of workouts | async">
+    <p>{{workout.fecha}}</p>
+    <button mat-flat-button (click)="chooseWorkout(workout)">Choose</button>
+  </div>
+
+  <div *ngFor="let secuencia of chosenWorkout.secuencias; let i = index">
+    <mat-card *ngIf="secuencia.id == chosenWorkout.history[currentStep]" class="example-card">
+      <mat-card-content>
+        <div>
+          <p> <b>Start:</b> Left {{secuencia.start.left}} / Right {{secuencia.start.right}}</p>
+          <h4>Steps:</h4>
+          <span *ngFor="let step of secuencia.steps"> {{step.hand}} : {{step.step}} |</span>
+        </div>
+        <h3><span>Set: {{currentStep + 1}} / {{chosenWorkout.history.length}}</span><span class="rung-span">Rung: {{secuencia.rung}}</span></h3>
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="add-rep-btn" mat-mini-fab color="primary" (click)="nextStep()"><img src="../assets/baseline-done-24px.svg" alt=""></button>        
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div *ngIf="currentStep == chosenWorkout.history.length && chosenWorkout.history.length > 0">
+    <h3>Good Job</h3>
+    <p>Do you want to save this workout?</p>
+    <button>Yes</button>
+    <button>No</button>
+  </div>
+
 </div>
