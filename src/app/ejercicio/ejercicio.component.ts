@@ -20,7 +20,9 @@ interface Workout {
 })
 export class EjercicioComponent implements OnInit {
   workoutsCollection: AngularFirestoreCollection<Workout>;
+  publicWorkoutsCollection: AngularFirestoreCollection<Workout>;
   workouts: Observable<Workout[]>
+  publicWorkouts: Observable<Workout[]>
   constructor(public auth: AuthService, private afs: AngularFirestore) { }
   mode = ''
   secuencia = {
@@ -50,7 +52,9 @@ export class EjercicioComponent implements OnInit {
   ngOnInit() {
     this.auth.user.subscribe(user => {
       this.workoutsCollection = this.afs.collection(`users/${user.uid}/workouts`);
-      this.workouts = this.workoutsCollection.valueChanges()
+      this.workouts = this.workoutsCollection.valueChanges();
+      this.publicWorkoutsCollection = this.afs.collection(`public_workouts`);
+      this.publicWorkouts = this.publicWorkoutsCollection.valueChanges();
     })
 
   }
@@ -139,6 +143,7 @@ export class EjercicioComponent implements OnInit {
 
   duplicate(secIndex) {
     let original = JSON.parse(JSON.stringify(this.secuencias[secIndex]));
+    console.log(original);
     let copy = JSON.parse(JSON.stringify(this.secuencias[secIndex]));
     copy.left = original.right;
     copy.right = original.left;
@@ -158,6 +163,8 @@ export class EjercicioComponent implements OnInit {
       }
     }
     copy.id = this.generarId(copy);
+    copy.reps = 0;
+    console.log(copy);
     this.secuencias.push(copy);
   }
 
@@ -168,12 +175,21 @@ export class EjercicioComponent implements OnInit {
 
   guardar () {
     let fecha = moment().format("DD-MM-YYYY");
+    let workout = {};
+    if (this.mode == 'load') {
+      workout = {
+        "history": this.chosenWorkout.history,
+        "secuencias": this.chosenWorkout.secuencias,
+        "fecha": fecha
+      };
+    } else if (this.mode == 'new') {
+      workout = {
+        "history": this.history,
+        "secuencias": this.secuencias,
+        "fecha": fecha
+      };
+    }
 
-    let workout = {
-      "history": this.history,
-      "secuencias": this.secuencias,
-      "fecha": fecha
-    };
 
     this.auth.user.subscribe(user => {
       if (!user) {
@@ -183,6 +199,7 @@ export class EjercicioComponent implements OnInit {
       let todaysWorkoutRef = this.afs.doc(`users/${user.uid}/workouts/${fecha}`);
       todaysWorkoutRef.set(workout, {merge: true});
     })
+    this.currentStep = 0;
   }
 
   chooseWorkout(workout) {

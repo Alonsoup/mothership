@@ -56,6 +56,9 @@
 
 
 <div class="" *ngIf="mode == 'load'">
+  <div *ngFor="let workout of publicWorkouts | async">
+    <p>{{workout.prueba}} world</p>    
+  </div>
   <div *ngIf="workouts.length < 1">
     <p>You haven't logged any workouts yet</p>
   </div>
@@ -75,7 +78,7 @@
         <h3><span>Set: {{currentStep + 1}} / {{chosenWorkout.history.length}}</span><span class="rung-span">Rung: {{secuencia.rung}}</span></h3>
       </mat-card-content>
       <mat-card-actions>
-        <button class="add-rep-btn" mat-mini-fab color="primary" (click)="nextStep()"><img src="../assets/baseline-done-24px.svg" alt=""></button>        
+        <button class="add-rep-btn" mat-mini-fab color="primary" (click)="nextStep()"><img src="../assets/baseline-done-24px.svg" alt=""></button>
       </mat-card-actions>
     </mat-card>
   </div>
@@ -83,7 +86,7 @@
   <div *ngIf="currentStep == chosenWorkout.history.length && chosenWorkout.history.length > 0">
     <h3>Good Job</h3>
     <p>Do you want to save this workout?</p>
-    <button>Yes</button>
+    <button (click)="guardar()">Yes</button>
     <button>No</button>
   </div>
 
