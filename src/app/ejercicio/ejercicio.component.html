@@ -1,7 +1,3 @@
-<div class="">
-  <p>Campus</p>
-</div>
-
 <div *ngIf="mode == ''">
   <button mat-raised-button (click)="changeMode('new')">Record a new session</button>
   <button mat-raised-button (click)="changeMode('load')">Load a routine</button>
@@ -24,8 +20,8 @@
     <button class="{{numero == secuencia.right ? 'active-right-rung' : ''}}" color="{{numero == secuencia.right ? 'accent' : ''}}" mat-button (click)="addStep('right', numero)">{{numero}}</button>
   </div>
 
-  <button mat-stroked-button (click)="agregarSecuencia()">Agregar Secuencia</button>
-  <button mat-stroked-button color="warn" (click)="eliminarDraft()">Borrar</button>
+  <button mat-stroked-button (click)="agregarSecuencia()">Add set</button>
+  <button mat-stroked-button color="warn" (click)="eliminarDraft()">Reset</button>
 
   <mat-card class="example-card" *ngFor="let secuencia of secuencias; let i = index">
     <mat-card-content>
@@ -56,16 +52,49 @@
 
 
 <div class="" *ngIf="mode == 'load'">
-  <div *ngFor="let workout of publicWorkouts | async">
-    <p>{{workout.prueba}} world</p>    
+  <div *ngIf="chosenWorkout.date == undefined">
+    <h3>Community routines</h3>
+    <div *ngFor="let workout of publicWorkouts | async">
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div>
+            <h4>{{workout.title}}</h4>
+            <p>By {{workout.creator}}</p>
+            <p>{{workout.description}}</p>
+            <p>{{workout.history.length}} sets total</p>
+            <p>{{workout.date}}</p>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-flat-button color="primary" (click)="chooseWorkout(workout)">Choose</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
   </div>
-  <div *ngIf="workouts.length < 1">
-    <p>You haven't logged any workouts yet</p>
+
+  <div *ngIf="chosenWorkout.date == undefined">
+    <h3>From your logs</h3>
+    <div *ngIf="workouts.length < 1">
+      <p>You haven't logged any workouts yet</p>
+    </div>
+    <div *ngFor="let workout of workouts | async">
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div>
+            <h4>{{workout.title}}</h4>
+            <p>{{workout.description}}</p>
+            <p>{{workout.history.length}} sets total</p>
+            <p>{{workout.date}}</p>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-flat-button (click)="chooseWorkout(workout)">Choose</button>
+          <button mat-button (click)="share(workout)">Share</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
   </div>
-  <div *ngFor="let workout of workouts | async">
-    <p>{{workout.fecha}}</p>
-    <button mat-flat-button (click)="chooseWorkout(workout)">Choose</button>
-  </div>
+
 
   <div *ngFor="let secuencia of chosenWorkout.secuencias; let i = index">
     <mat-card *ngIf="secuencia.id == chosenWorkout.history[currentStep]" class="example-card">

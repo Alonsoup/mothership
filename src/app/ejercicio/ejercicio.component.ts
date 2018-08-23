@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalShareComponent } from '../modal-share/modal-share.component';
+import { ModalSaveComponent } from '../modal-save/modal-save.component';
 
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 import * as moment from 'moment';
 import { AuthService } from '../core/auth.service';
@@ -10,7 +13,7 @@ import { AuthService } from '../core/auth.service';
 interface Workout {
   "history": [string],
   "secuencias": [any],
-  "fecha": string,
+  "date": string,
 }
 
 @Component({
@@ -23,7 +26,11 @@ export class EjercicioComponent implements OnInit {
   publicWorkoutsCollection: AngularFirestoreCollection<Workout>;
   workouts: Observable<Workout[]>
   publicWorkouts: Observable<Workout[]>
-  constructor(public auth: AuthService, private afs: AngularFirestore) { }
+  constructor(
+    public auth: AuthService,
+    private afs: AngularFirestore,
+    public dialog: MatDialog
+  ) { }
   mode = ''
   secuencia = {
     id: "",
@@ -174,32 +181,66 @@ export class EjercicioComponent implements OnInit {
   }
 
   guardar () {
-    let fecha = moment().format("DD-MM-YYYY");
-    let workout = {};
-    if (this.mode == 'load') {
-      workout = {
-        "history": this.chosenWorkout.history,
-        "secuencias": this.chosenWorkout.secuencias,
-        "fecha": fecha
-      };
-    } else if (this.mode == 'new') {
-      workout = {
-        "history": this.history,
-        "secuencias": this.secuencias,
-        "fecha": fecha
-      };
-    }
+    let date = moment().format("DD-MM-YYYY");
+    let workout = {
+      date: date,
+      title: '',
+      description: '',
+      history: [],
+      secuencias: []
+    };
 
+    if (this.mode == 'load') {
+      workout.history = this.chosenWorkout.history;
+      workout.secuencias = this.chosenWorkout.secuencias;
+    } else if (this.mode == 'new') {
+      workout.history = this.history;
+      workout.secuencias = this.secuencias;
+    }
 
     this.auth.user.subscribe(user => {
       if (!user) {
         console.log('No hay usuario. Inicia sesión.');
         return;
       }
-      let todaysWorkoutRef = this.afs.doc(`users/${user.uid}/workouts/${fecha}`);
-      todaysWorkoutRef.set(workout, {merge: true});
+      const dialogRef = this.dialog.open(ModalSaveComponent, {
+        width: '250px'
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(result);
+        workout.title = result.title;
+        workout.description = result.description;
+        let todaysWorkoutRef = this.afs.doc(`users/${user.uid}/workouts/${date}`);
+        todaysWorkoutRef.set(workout, {merge: true});
+      })
+
     })
     this.currentStep = 0;
+    this.mode = 'load';
+  }
+
+  share(workout) {
+    this.auth.user.subscribe(user => {
+      if (!user) {
+        console.log('No User. Go to login.');
+        return;
+      }
+
+      const dialogRef = this.dialog.open(ModalShareComponent, {
+        width: '250px',
+        data: {prueba: 'holi'}
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        let date = moment().format("DD-MM-YYYY");
+        workout.date = date;
+        workout.title = result.title;
+        workout.description = result.description;
+        workout.creator = user.displayName;
+        let publicWorkoutsRef = this.afs.doc(`public_workouts/${user.uid}${date}`);
+        publicWorkoutsRef.set(workout, {merge: true});
+      })
+    })
+
   }
 
   chooseWorkout(workout) {

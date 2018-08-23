@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Save this workout</h2>
+<mat-dialog-content>
+  <mat-form-field>
+    <input matInput placeholder="Title" [(ngModel)]="workout_metadata.title">
+  </mat-form-field>
+  <mat-form-field>
+    <textarea matInput placeholder="Description" [(ngModel)]="workout_metadata.description"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button [disabled]="workout_metadata.title == '' || workout_metadata.description == ''" mat-raised-button [mat-dialog-close]="workout_metadata">Save</button>
+  <button mat-button (click)="close()">Cancel</button>
+</mat-dialog-actions>

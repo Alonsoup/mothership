@@ -12,6 +12,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
+import {MatDialogModule} from '@angular/material/dialog';
+
 import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
 export const firebaseConfig = environment.firebaseConfig;
@@ -22,6 +24,8 @@ import { LibrosComponent } from './libros/libros.component';
 import { ReceiptsComponent } from './receipts/receipts.component';
 import { EjercicioComponent } from './ejercicio/ejercicio.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { ModalShareComponent } from './modal-share/modal-share.component';
+import { ModalSaveComponent } from './modal-save/modal-save.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +34,9 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     LibrosComponent,
     ReceiptsComponent,
     EjercicioComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    ModalShareComponent,
+    ModalSaveComponent
   ],
   imports: [
     BrowserModule,
@@ -47,11 +53,16 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     MatSelectModule,
     FormsModule,
     MatCardModule,
+    MatDialogModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
     CoreModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    ModalShareComponent,
+    ModalSaveComponent
+  ]
 })
 export class AppModule { }
