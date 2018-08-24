@@ -13,6 +13,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
@@ -52,6 +53,7 @@ import { ModalSaveComponent } from './modal-save/modal-save.component';
     MatInputModule,
     MatSelectModule,
     FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatDialogModule,
     AngularFireModule.initializeApp(firebaseConfig),

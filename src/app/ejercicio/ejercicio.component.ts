@@ -31,6 +31,8 @@ export class EjercicioComponent implements OnInit {
     private afs: AngularFirestore,
     public dialog: MatDialog
   ) { }
+  loggedIn = false
+  user = null
   mode = ''
   secuencia = {
     id: "",
@@ -57,11 +59,19 @@ export class EjercicioComponent implements OnInit {
   currentStep = 0
 
   ngOnInit() {
+    this.publicWorkoutsCollection = this.afs.collection(`public_workouts`);
+    this.publicWorkouts = this.publicWorkoutsCollection.valueChanges();
+
     this.auth.user.subscribe(user => {
+      if (user == null) {
+        console.log('No hay usuario');
+        this.loggedIn = false;
+        return;
+      }
+      this.user = user;
+      this.loggedIn = true;
       this.workoutsCollection = this.afs.collection(`users/${user.uid}/workouts`);
       this.workouts = this.workoutsCollection.valueChanges();
-      this.publicWorkoutsCollection = this.afs.collection(`public_workouts`);
-      this.publicWorkouts = this.publicWorkoutsCollection.valueChanges();
     })
 
   }
@@ -137,15 +147,13 @@ export class EjercicioComponent implements OnInit {
     };
   }
 
-  borrarSecuencia(secIndex) {
-    console.log(secIndex);
+  borrarSecuencia(secIndex) {    
     this.secuencias.splice(secIndex, 1);
   }
 
   changeReps(secIndex, factor) {
     this.secuencias[secIndex].reps += factor;
     this.history.push(this.secuencias[secIndex].id);
-    console.log(this.history);
   }
 
   duplicate(secIndex) {
@@ -175,11 +183,6 @@ export class EjercicioComponent implements OnInit {
     this.secuencias.push(copy);
   }
 
-  logStuff () {
-    console.info('Secuencia: ' , this.secuencia);
-    console.info('Secuencias: ', this.secuencias);
-  }
-
   guardar () {
     let date = moment().format("DD-MM-YYYY");
     let workout = {
@@ -198,49 +201,40 @@ export class EjercicioComponent implements OnInit {
       workout.secuencias = this.secuencias;
     }
 
-    this.auth.user.subscribe(user => {
-      if (!user) {
-        console.log('No hay usuario. Inicia sesión.');
+    const dialogRef = this.dialog.open(ModalSaveComponent, {
+      width: '250px'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+      if (result == undefined) {
         return;
       }
-      const dialogRef = this.dialog.open(ModalSaveComponent, {
-        width: '250px'
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(result);
-        workout.title = result.title;
-        workout.description = result.description;
-        let todaysWorkoutRef = this.afs.doc(`users/${user.uid}/workouts/${date}`);
-        todaysWorkoutRef.set(workout, {merge: true});
-      })
-
+      workout.title = result.title;
+      workout.description = result.description;
+      let todaysWorkoutRef = this.afs.doc(`users/${this.user.uid}/workouts/${date}`);
+      todaysWorkoutRef.set(workout, {merge: true});
+      this.currentStep = 0;
+      this.mode = 'load';
     })
-    this.currentStep = 0;
-    this.mode = 'load';
   }
 
   share(workout) {
-    this.auth.user.subscribe(user => {
-      if (!user) {
-        console.log('No User. Go to login.');
+    const dialogRef = this.dialog.open(ModalShareComponent, {
+      width: '250px',
+      data: {prueba: 'holi'}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == undefined) {
         return;
       }
-
-      const dialogRef = this.dialog.open(ModalShareComponent, {
-        width: '250px',
-        data: {prueba: 'holi'}
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        let date = moment().format("DD-MM-YYYY");
-        workout.date = date;
-        workout.title = result.title;
-        workout.description = result.description;
-        workout.creator = user.displayName;
-        let publicWorkoutsRef = this.afs.doc(`public_workouts/${user.uid}${date}`);
-        publicWorkoutsRef.set(workout, {merge: true});
-      })
+      let date = moment().format("DDMMYYYY");
+      workout.date = date;
+      workout.title = result.title;
+      workout.description = result.description;
+      workout.creator = this.user.displayName;
+      let publicWorkoutsRef = this.afs.doc(`public_workouts/${this.user.uid}${date}`);
+      publicWorkoutsRef.set(workout, {merge: true});
     })
-
   }
 
   chooseWorkout(workout) {

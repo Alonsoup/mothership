@@ -1,13 +1,23 @@
 <h2 mat-dialog-title>Share this workout</h2>
 <mat-dialog-content>
-  <mat-form-field>
-    <input matInput placeholder="Title" [(ngModel)]="workout_metadata.title">
-  </mat-form-field>
-  <mat-form-field>
-    <textarea matInput placeholder="Description" [(ngModel)]="workout_metadata.description"></textarea>
-  </mat-form-field>
+  <p>Thanks for contributing. Your workout will be available in the Community Routines section.</p>
+  <form *ngIf="user != null" [formGroup]="metadataForm">
+    <mat-form-field>
+      <input matInput placeholder="Title" formControlName="title">
+      <mat-error *ngIf="title.invalid && title.touched">
+        Title does not look right
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput placeholder="Description" formControlName="description"></textarea>
+      <mat-error *ngIf="description.invalid && description.touched">
+        Description does not look right
+      </mat-error>
+    </mat-form-field>
+    <!-- Value: {{ metadataForm.value | json }} -->
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button [disabled]="workout_metadata.title == '' || workout_metadata.description == ''" mat-raised-button [mat-dialog-close]="workout_metadata">Save</button>
+  <button [disabled]="metadataForm.invalid" mat-raised-button [mat-dialog-close]="metadataForm.value">Save</button>
   <button mat-button (click)="close()">Cancel</button>
 </mat-dialog-actions>
