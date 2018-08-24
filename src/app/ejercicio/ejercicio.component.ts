@@ -57,6 +57,8 @@ export class EjercicioComponent implements OnInit {
     history: []
   }
   currentStep = 0
+  slideConfig = {"slidesToShow": 1, "slidesToScroll": 1};
+
 
   ngOnInit() {
     this.publicWorkoutsCollection = this.afs.collection(`public_workouts`);
@@ -147,7 +149,7 @@ export class EjercicioComponent implements OnInit {
     };
   }
 
-  borrarSecuencia(secIndex) {    
+  borrarSecuencia(secIndex) {
     this.secuencias.splice(secIndex, 1);
   }
 

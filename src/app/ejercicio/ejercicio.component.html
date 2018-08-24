@@ -18,30 +18,37 @@
   <button mat-stroked-button (click)="agregarSecuencia()">Add set</button>
   <button mat-stroked-button color="warn" (click)="eliminarDraft()">Reset</button>
 
-  <mat-card class="example-card" *ngFor="let secuencia of secuencias; let i = index">
-    <mat-card-content>
-      <div>
-        <p> <b>Start:</b> Left {{secuencia.start.left}} / Right {{secuencia.start.right}}</p>
-        <h4>Steps:</h4>
-        <span *ngFor="let step of secuencia.steps"> {{step.hand}} : {{step.step}} |</span>
-      </div>
-      <h3><span>Reps: {{secuencia.reps}}</span><span class="rung-span">Rung: {{secuencia.rung}}</span></h3>
-    </mat-card-content>
-    <mat-card-actions>
-      <button class="dup-btn" mat-raised-button (click)="duplicate(i)"><img src="../assets/baseline-swap_horiz-24px.svg" alt=""></button>
-      <button class="add-rep-btn" mat-mini-fab color="primary" (click)="changeReps(i, 1)">+1</button>
-      <button class="del-btn" mat-raised-button color="" (click)="borrarSecuencia(i)"><img src="../assets/baseline-delete-24px.svg" alt=""></button>
-    </mat-card-actions>
-  </mat-card>
+  <ngx-slick class="carousel" #slickModal="slick-modal" [config]="slideConfig">
+    <div ngxSlickItem *ngFor="let secuencia of secuencias; let i = index" class="slide">
+      <mat-card class="example-card" >
+        <mat-card-content>
+          <div>
+            <p> <b>Start:</b> Left {{secuencia.start.left}} / Right {{secuencia.start.right}}</p>
+            <h4>Steps:</h4>
+            <span *ngFor="let step of secuencia.steps"> {{step.hand}} : {{step.step}} |</span>
+          </div>
+          <h3><span>Reps: {{secuencia.reps}}</span><span class="rung-span">Rung: {{secuencia.rung}}</span></h3>
+        </mat-card-content>
+        <mat-card-actions>
+          <button class="dup-btn" mat-raised-button (click)="duplicate(i)"><img src="../assets/baseline-swap_horiz-24px.svg" alt=""></button>
+          <button class="add-rep-btn" mat-mini-fab color="primary" (click)="changeReps(i, 1)">+1</button>
+          <button class="del-btn" mat-raised-button color="" (click)="borrarSecuencia(i)"><img src="../assets/baseline-delete-24px.svg" alt=""></button>
+        </mat-card-actions>
+      </mat-card>
+      <p>{{i + 1}} / {{secuencias.length}} <span *ngIf="secuencias.length > 1 && i == 0">You can swipe left or right</span></p>
+    </div>
+  </ngx-slick>
 
-  <div class="timer">
+
+  <!-- <div class="timer">
     <h3>Descanso</h3>
     <p>{{timer.counter}} S</p>
     <button mat-flat-button (click)="startTimer()">Start</button>
     <button mat-flat-button color="warn" (click)="stopTimer()">Stop</button>
+  </div> -->
+  <div class="">
+    <button mat-fab color="accent" (click)="guardar()">Save</button>
   </div>
-
-  <button mat-fab color="accent" (click)="guardar()">Save</button>  
 </div>
 
 

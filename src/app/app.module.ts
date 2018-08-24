@@ -13,12 +13,14 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatSliderModule} from '@angular/material/slider';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
 export const firebaseConfig = environment.firebaseConfig;
 import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { SlickModule } from 'ngx-slick';
 
 import { CoreModule } from "./core/core.module";
 import { LibrosComponent } from './libros/libros.component';
@@ -56,8 +58,10 @@ import { ModalSaveComponent } from './modal-save/modal-save.component';
     ReactiveFormsModule,
     MatCardModule,
     MatDialogModule,
+    MatSliderModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
+    SlickModule,
     CoreModule
   ],
   providers: [],
