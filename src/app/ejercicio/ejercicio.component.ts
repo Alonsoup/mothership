@@ -9,11 +9,19 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 import * as moment from 'moment';
 import { AuthService } from '../core/auth.service';
+import { map, scan } from 'rxjs/operators';
+import {from, timer} from 'rxjs';
+import { zip } from 'rxjs/operators';
 
 interface Workout {
   "history": [string],
   "secuencias": [any],
   "date": string,
+}
+
+interface Step {
+  "hand": string,
+  "step": number
 }
 
 @Component({
@@ -57,8 +65,11 @@ export class EjercicioComponent implements OnInit {
     history: []
   }
   currentStep = 0
-  slideConfig = {"slidesToShow": 1, "slidesToScroll": 1};
-
+  slideConfig = {"slidesToShow": 1, "slidesToScroll": 1}
+  vis = {
+    left: 0,
+    right: 0
+  }
 
   ngOnInit() {
     this.publicWorkoutsCollection = this.afs.collection(`public_workouts`);
@@ -75,7 +86,70 @@ export class EjercicioComponent implements OnInit {
       this.workoutsCollection = this.afs.collection(`users/${user.uid}/workouts`);
       this.workouts = this.workoutsCollection.valueChanges();
     })
+  }
 
+  analysis(workout) {
+    console.log(workout.secuencias);
+    console.log(workout.history);
+    //all different rungs
+    //main rung
+    var rungs = workout.secuencias.reduce((accumulator, element) => {
+      var rung = element.id[0];
+      var startLeft = element.id[1];
+      var startRight = element.id[2];
+      var moves = element.id.slice(3);
+      var parsedMoves = [];
+
+      var firstLeft = true;
+      var lastLeft = 0;
+      var lastRight = 0;
+      // while (moves.length > 0) {
+      //   if (moves.indexOf('left') < moves.indexOf('right')) {
+      //     parsedMoves.push({
+      //       side: 'left',
+      //       from: firstLeft ? startLeft : lastLeft,
+      //       to: moves[4]
+      //     })
+      //     firstLeft = false;
+      //     moves = moves.slice(5)
+      //   }
+      //
+      // }
+
+      console.log(parsedMoves);
+
+      if (accumulator.rungs.hasOwnProperty(rung)) {
+        accumulator.rungs[rung] += 1;
+      } else {
+        accumulator.rungs[rung] = 1;
+      }
+      return accumulator;
+    },
+    {
+      rungs: {}
+    });
+
+    console.log(rungs);
+
+    //average move distance
+    //hardest move
+    //left/right load
+
+  }
+
+  startAnimation(steps) {
+    var obs = from(steps).pipe(
+      zip(timer(0, 600), x => <Step>x)
+    );
+
+    obs.subscribe(step => {
+      this.vis[step.hand] = step.step;
+    });
+
+    this.vis = {
+      left: 0,
+      right: 0
+    }
   }
 
   changeMode(mode) {

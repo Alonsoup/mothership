@@ -14,6 +14,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSliderModule} from '@angular/material/slider';
+import {MatChipsModule} from '@angular/material/chips';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { environment } from '../environments/environment';
@@ -59,6 +60,7 @@ import { ModalSaveComponent } from './modal-save/modal-save.component';
     MatCardModule,
     MatDialogModule,
     MatSliderModule,
+    MatChipsModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
     SlickModule,

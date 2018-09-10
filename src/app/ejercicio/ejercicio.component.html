@@ -31,7 +31,7 @@
         </mat-card-content>
         <mat-card-actions>
           <button class="dup-btn" mat-raised-button (click)="duplicate(i)"><img src="../assets/baseline-swap_horiz-24px.svg" alt=""></button>
-          <button class="add-rep-btn" mat-mini-fab color="primary" (click)="changeReps(i, 1)">+1</button>
+          <button class="add-rep-btn" mat-fab color="primary" (click)="changeReps(i, 1)">+1</button>
           <button class="del-btn" mat-raised-button color="" (click)="borrarSecuencia(i)"><img src="../assets/baseline-delete-24px.svg" alt=""></button>
         </mat-card-actions>
       </mat-card>
@@ -68,6 +68,7 @@
         </mat-card-content>
         <mat-card-actions>
           <button mat-flat-button color="primary" (click)="chooseWorkout(workout)">Choose</button>
+          <button mat-flat-button color="primary" (click)="analysis(workout)">Analysis</button>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -110,10 +111,17 @@
           <h4>Steps:</h4>
           <span *ngFor="let step of secuencia.steps"> {{step.hand}} : {{step.step}} |</span>
         </div>
+        <div class="vis">
+          <mat-chip-list>
+            <mat-chip>{{vis.left == 0 ? secuencia.start.left : vis.left}}</mat-chip>
+            <mat-chip>{{vis.right == 0 ? secuencia.start.right : vis.right}}</mat-chip>
+          </mat-chip-list>
+        </div>
+        <button (click)="startAnimation(secuencia.steps)">Animate</button>
         <h3><span>Set: {{currentStep + 1}} / {{chosenWorkout.history.length}}</span><span class="rung-span">Rung: {{secuencia.rung}}</span></h3>
       </mat-card-content>
       <mat-card-actions>
-        <button class="add-rep-btn" mat-mini-fab color="primary" (click)="nextStep()"><img src="../assets/baseline-done-24px.svg" alt=""></button>
+        <button class="add-rep-btn" mat-fab color="primary" (click)="nextStep()">Done</button>
       </mat-card-actions>
     </mat-card>
   </div>
